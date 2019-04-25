@@ -3,8 +3,6 @@ package com.libimedical.hera;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,23 +12,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import com.libimedical.hera.tracing.TraceViewModel;
 import com.libimedical.hera.tracing.TracingItem;
 
-import java.io.File;
 import java.util.List;
-
-import static android.support.v4.content.FileProvider.getUriForFile;
 
 public class RecordingEntryFragment extends Fragment {
 
     private TraceViewModel mTraceViewModel;
-
-    private TraceRecorder mTraceRecorder;
-
-    private boolean isPlaying;
 
     public RecordingEntryFragment() {
     }
@@ -38,7 +28,6 @@ public class RecordingEntryFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.isPlaying = false;
     }
 
     @Override
@@ -50,38 +39,6 @@ public class RecordingEntryFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-
-            // Click listener for playback
-            ListEntryPlaybackListener playbackListener = new ListEntryPlaybackListener() {
-                @Override
-                public void onPlayClicked(int position) {
-                    TracingItem item = mTraceViewModel.getAllTraces().getValue().get(position);
-                    mTraceRecorder = new TraceRecorder(item.fileName);
-                    mTraceRecorder.startPlaying();
-                }
-
-                @Override
-                public void onPauseClicked(int position) {
-                    if (mTraceRecorder != null) {
-                        mTraceRecorder.stopPlaying();
-                    }
-                }
-            };
-
-            // Click listener for share button
-            ListEntryShareListener shareListener = position -> {
-                TracingItem item = mTraceViewModel.getAllTraces().getValue().get(position);
-                String recordingPath = item.fileName;
-                File recordingFile = new File(recordingPath);
-                Context context2 = getContext();
-                Uri uriToFile = getUriForFile(context2, "com.libimedical.hera.fileprovider", recordingFile);
-
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_STREAM, uriToFile);
-                shareIntent.setType("audio/mpeg");
-                startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
-            };
 
             // Click listener for the row as a whole
             FragmentInteractionListener itemListener = position -> {
@@ -101,7 +58,7 @@ public class RecordingEntryFragment extends Fragment {
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             };
-            TraceListAdapter adapter = new TraceListAdapter(context, playbackListener, shareListener, itemListener);
+            TraceListAdapter adapter = new TraceListAdapter(context, itemListener);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
@@ -115,18 +72,6 @@ public class RecordingEntryFragment extends Fragment {
 
         }
         return view;
-    }
-
-    private void togglePlaying(View v) {
-        if (isPlaying) {
-            ImageButton playButton = (ImageButton) v;
-            playButton.setImageResource((R.drawable.ic_play_arrow_black_24dp));
-            isPlaying = false;
-        } else {
-            ImageButton playbackButton = (ImageButton) v;
-            playbackButton.setImageResource((R.drawable.ic_stop_black_24dp));
-            isPlaying = true;
-        }
     }
 
     @Override
@@ -144,15 +89,4 @@ public class RecordingEntryFragment extends Fragment {
         void onItemClicked(int position);
     }
 
-    public interface ListEntryPlaybackListener {
-        // TODO: Update argument type and name
-        void onPlayClicked(int position);
-
-        void onPauseClicked(int position);
-    }
-
-    public interface ListEntryShareListener {
-        // TODO: Update argument type and name
-        void onShareClicked(int position);
-    }
 }
