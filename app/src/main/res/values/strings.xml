@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">fetoMic</string>
+    <string name="title_activity_main">Main Activity</string>
+    <string name="save_recording_dialog_fragment">Save this recording?</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="record_id">Record ID</string>
+    <string name="title_activity_display_all_recordings">DisplayAllRecordingsActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_recordings">Recordings</string>
+    <string name="send_to">Send Trace to:</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>
