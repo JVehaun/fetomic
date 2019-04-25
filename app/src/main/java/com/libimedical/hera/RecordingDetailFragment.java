@@ -24,9 +24,11 @@ public class RecordingDetailFragment extends Fragment {
     View inflaterView;
 
     private TextView mRecordingLengthView;
+    private TextView mNotesView;
 
     String recordId;
     String fileName;
+    String notes;
 
     private TraceRecorder mTraceRecorder;
 
@@ -41,6 +43,7 @@ public class RecordingDetailFragment extends Fragment {
         if (getArguments() != null) {
             recordId = getArguments().getString("recordId");
             fileName = getArguments().getString("fileName");
+            notes = getArguments().getString("notes");
         }
         this.isPlaying = false;
     }
@@ -59,9 +62,10 @@ public class RecordingDetailFragment extends Fragment {
 
         // TextViews
         mRecordingLengthView = inflaterView.findViewById((R.id.recording_length));
-        // mRecordIdView = (TextView) inflaterView.findViewById(R.id.item_number);
-
         mRecordingLengthView.setText(TracingItem.getLengthFromFile(fileName));
+
+        mNotesView = inflaterView.findViewById(R.id.recording_notes);
+        mNotesView.setText(notes);
 
         return inflaterView;
     }

@@ -47,6 +47,7 @@ public class RecordingEntryFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("name", item.recordId);
                 bundle.putString("fileName", item.fileName);
+                bundle.putString("notes", item.notes);
 
                 // Create the new fragment page
                 RecordingDetailFragment recordingDetailFragment = new RecordingDetailFragment();
