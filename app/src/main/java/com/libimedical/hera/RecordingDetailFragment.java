@@ -1,6 +1,8 @@
 package com.libimedical.hera;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+
+import java.io.File;
+
+import static android.support.v4.content.FileProvider.getUriForFile;
 
 
 public class RecordingDetailFragment extends Fragment {
@@ -40,8 +46,9 @@ public class RecordingDetailFragment extends Fragment {
         inflaterView = inflater.inflate(R.layout.fragment_recording_detail, container, false);
 
         // Buttons
-        // ImageButton mShareButton = inflaterView.findViewById(R.id.share_button);
-        // mShareButton.setOnClickListener(v -> (v));
+        ImageButton mShareButton = inflaterView.findViewById(R.id.share_button);
+        mShareButton.setOnClickListener(v -> shareRecording(v));
+
         ImageButton mPlaybackButton = inflaterView.findViewById(R.id.playback_button);
         mPlaybackButton.setOnClickListener(v -> togglePlaying(v));
 
@@ -76,9 +83,8 @@ public class RecordingDetailFragment extends Fragment {
         }
     }
 
-    /*
     private void shareRecording(View v) {
-        String recordingPath = item.fileName;
+        String recordingPath = fileName;
         File recordingFile = new File(recordingPath);
         Context context2 = getContext();
         Uri uriToFile = getUriForFile(context2, "com.libimedical.hera.fileprovider", recordingFile);
@@ -89,5 +95,4 @@ public class RecordingDetailFragment extends Fragment {
         shareIntent.setType("audio/mpeg");
         startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
     }
-    */
 }
