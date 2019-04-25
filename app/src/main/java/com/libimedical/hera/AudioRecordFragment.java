@@ -11,7 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.libimedical.hera.waveform.AudioDataReceivedListener;
+import com.libimedical.hera.waveform.RecordingThread;
+import com.newventuresoftware.waveform.WaveformView;
+
 public class AudioRecordFragment extends Fragment {
+
+    private WaveformView mRealtimeWaveformView;
+    private RecordingThread mRecordingThread;
 
     View inflaterView;
     TraceRecorder mTraceRecorder;
@@ -25,7 +32,22 @@ public class AudioRecordFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         inflaterView = inflater.inflate(R.layout.fragment_audio_record, container, false);
         FloatingActionButton fab = inflaterView.findViewById(R.id.fab);
-        fab.setOnClickListener(v -> onRecord(v));
+        fab.setOnClickListener(view -> {
+            if (!mRecordingThread.recording()) {
+                onRecord(view);
+            } else {
+                onPause(view);
+            }
+        });
+
+        mRealtimeWaveformView = (WaveformView) inflaterView.findViewById(R.id.waveformView);
+        mRecordingThread = new RecordingThread(new AudioDataReceivedListener() {
+            @Override
+            public void onAudioDataReceived(short[] data) {
+                mRealtimeWaveformView.setSamples(data);
+            }
+        });
+
         return inflaterView;
     }
 
@@ -39,7 +61,14 @@ public class AudioRecordFragment extends Fragment {
         FloatingActionButton fab = inflaterView.findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_stop_white_24dp);
         fab.setOnClickListener(v -> onPause(v));
-
+        mRealtimeWaveformView = (WaveformView) inflaterView.findViewById(R.id.waveformView);
+        mRecordingThread = new RecordingThread(new AudioDataReceivedListener() {
+            @Override
+            public void onAudioDataReceived(short[] data) {
+                mRealtimeWaveformView.setSamples(data);
+            }
+        });
+        mRecordingThread.startRecording();
         mTraceRecorder.startRecording();
     }
 

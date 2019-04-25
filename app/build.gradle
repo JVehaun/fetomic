@@ -23,6 +23,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    sourceSets {
+        main { java.srcDirs = ['src/main/java'] }
+    }
 }
 
 dependencies {
@@ -39,4 +42,5 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
+    compile project(path: ':waveform')
 }
