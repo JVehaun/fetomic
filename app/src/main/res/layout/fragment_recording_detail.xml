@@ -29,7 +29,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/recording_notes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView"
@@ -53,7 +53,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/recordingTime"
+            android:id="@+id/recording_length"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -96,7 +96,7 @@
             android:padding="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/playback_button"
-            app:layout_constraintStart_toEndOf="@+id/recordingTime"
+            app:layout_constraintStart_toEndOf="@+id/recording_length"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_share_black_24dp" />
     </android.support.constraint.ConstraintLayout>

@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.libimedical.hera.tracing.TracingItem;
 
 import java.io.File;
 
@@ -19,6 +22,8 @@ import static android.support.v4.content.FileProvider.getUriForFile;
 public class RecordingDetailFragment extends Fragment {
 
     View inflaterView;
+
+    private TextView mRecordingLengthView;
 
     String recordId;
     String fileName;
@@ -53,7 +58,10 @@ public class RecordingDetailFragment extends Fragment {
         mPlaybackButton.setOnClickListener(v -> togglePlaying(v));
 
         // TextViews
+        mRecordingLengthView = inflaterView.findViewById((R.id.recording_length));
         // mRecordIdView = (TextView) inflaterView.findViewById(R.id.item_number);
+
+        mRecordingLengthView.setText(TracingItem.getLengthFromFile(fileName));
 
         return inflaterView;
     }
