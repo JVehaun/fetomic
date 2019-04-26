@@ -13,13 +13,26 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.libimedical.hera.tracing.TracingItem;
+import com.libimedical.hera.waveform.PlaybackListener;
+import com.libimedical.hera.waveform.PlaybackThread;
+import com.newventuresoftware.waveform.WaveformView;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 
 import static android.support.v4.content.FileProvider.getUriForFile;
 
 
 public class RecordingDetailFragment extends Fragment {
+
+    private WaveformView mRealtimeWaveformView;
+    private PlaybackThread mPlaybackThread;
 
     View inflaterView;
 
@@ -58,7 +71,7 @@ public class RecordingDetailFragment extends Fragment {
         mShareButton.setOnClickListener(v -> shareRecording(v));
 
         ImageButton mPlaybackButton = inflaterView.findViewById(R.id.playback_button);
-        mPlaybackButton.setOnClickListener(v -> togglePlaying(v));
+        // mPlaybackButton.setOnClickListener(v -> togglePlaying(v));
 
         // TextViews
         mRecordingLengthView = inflaterView.findViewById((R.id.recording_length));
@@ -67,7 +80,68 @@ public class RecordingDetailFragment extends Fragment {
         mNotesView = inflaterView.findViewById(R.id.recording_notes);
         mNotesView.setText(notes);
 
+        final WaveformView mPlaybackView = inflaterView.findViewById(R.id.playbackWaveformView);
+
+        short[] samples = null;
+        try {
+            samples = getAudioSample(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (samples != null) {
+            mPlaybackThread = new PlaybackThread(samples, new PlaybackListener() {
+                @Override
+                public void onProgress(int progress) {
+                    mPlaybackView.setMarkerPosition(progress);
+                }
+                @Override
+                public void onCompletion() {
+                    mPlaybackView.setMarkerPosition(mPlaybackView.getAudioLength());
+                    mPlaybackButton.setImageResource(android.R.drawable.ic_media_play);
+                }
+            });
+            mPlaybackView.setChannels(1);
+            mPlaybackView.setSampleRate(PlaybackThread.SAMPLE_RATE);
+            mPlaybackView.setSamples(samples);
+
+            mPlaybackButton.setOnClickListener(v -> {
+                if (!mPlaybackThread.playing()) {
+                    mPlaybackThread.startPlayback();
+                    mPlaybackButton.setImageResource(android.R.drawable.ic_media_pause);
+                } else {
+                    mPlaybackThread.stopPlayback();
+                    mPlaybackButton.setImageResource(android.R.drawable.ic_media_play);
+                }
+            });
+        }
+
         return inflaterView;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        mPlaybackThread.stopPlayback();
+    }
+
+    private short[] getAudioSample(String fileName) throws IOException{
+        File recordingFile = new File(fileName);
+        FileInputStream is = new FileInputStream(fileName);
+        byte[] data;
+        try {
+            data = IOUtils.toByteArray(is);
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+
+        ShortBuffer sb = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
+        short[] samples = new short[sb.limit()];
+        sb.get(samples);
+        return samples;
     }
 
     @Override

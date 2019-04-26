@@ -8,7 +8,7 @@ import android.util.Log;
 import java.nio.ShortBuffer;
 
 public class PlaybackThread {
-    static final int SAMPLE_RATE = 44100;
+    public static final int SAMPLE_RATE = 44100;
     private static final String LOG_TAG = PlaybackThread.class.getSimpleName();
 
     public PlaybackThread(short[] samples, PlaybackListener listener) {
@@ -33,12 +33,7 @@ public class PlaybackThread {
 
         // Start streaming in a thread
         mShouldContinue = true;
-        mThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                play();
-            }
-        });
+        mThread = new Thread(() -> play());
         mThread.start();
     }
 

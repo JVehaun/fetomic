@@ -31,7 +31,6 @@ public class WaveformView extends View {
     private Paint mStrokePaint, mFillPaint, mMarkerPaint;
 
     // Used in draw
-    private int brightness;
     private Rect drawRect;
 
     private int width, height;
@@ -81,7 +80,7 @@ public class WaveformView extends View {
         mTextPaint = new TextPaint();
         mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
-                mTextPaint.setColor(mTextColor);
+        mTextPaint.setColor(mTextColor);
         mTextPaint.setTextSize(TextUtils.getFontSize(getContext(),
                 android.R.attr.textAppearanceSmall));
 
@@ -127,7 +126,7 @@ public class WaveformView extends View {
 
         LinkedList<float[]> temp = mHistoricalData;
         if (mMode == MODE_RECORDING && temp != null) {
-            brightness = colorDelta;
+            int brightness = colorDelta;
             for (float[] p : temp) {
                 mStrokePaint.setAlpha(brightness);
                 canvas.drawLines(p, mStrokePaint);

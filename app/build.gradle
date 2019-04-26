@@ -29,18 +29,19 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:support-vector-drawable:28.0.0'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
-
     def room_version = "1.1.1"
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     compile project(path: ':waveform')
+    implementation files('commons-io-2.6-sources.jar')
+    implementation files('commons-io-2.6.jar')
 }
